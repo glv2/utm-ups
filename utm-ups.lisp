@@ -22,14 +22,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   (:use :common-lisp)
   (:export #:*ellipsoid*
            #:band
-           #:deg->rad
            #:ellipsoids
            #:format-lat/lon
            #:format-utm/ups
            #:lat/lon->ups
            #:lat/lon->utm
            #:lat/lon->utm/ups
-           #:rad->deg
            #:ups-band
            #:ups->lat/lon
            #:utm-band
