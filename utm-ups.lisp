@@ -397,8 +397,8 @@ will be used for angles, otherwise d°m's\" notation will be used."
   (flet ((dms (angle)
            (multiple-value-bind (d r) (floor (abs angle))
              (multiple-value-bind (m r) (floor (* 60 r))
-               (let ((s (floor (* 60 r))))
-                 (format nil "~d°~2,'0d'~2,'0d\"" d m s))))))
+               (let ((s (/ (floor (* 600 r)) 10)))
+                 (format nil "~d°~2,'0d'~4,1,,,'0f\"" d m s))))))
     (if decimal
         (format nil "~,6f ~,6f" latitude longitude)
         (format nil "~a~a ~a~a"
