@@ -1,0 +1,193 @@
+#+TITLE: utm-ups
+
+This is a Common Lisp library to convert coordinates between Latitude/Longitude
+and UTM (Universal Transverse Mercator) or UPS (Universal Polar Stereographic).
+
+* API
+
+In the library, latitude and longitude are represented by real numbers
+(degrees), positive for northern latitude and eastern longitudes, and negative
+for southern latitude and western longitudes.
+
+UTM zones are represented by positive integers for northern latitudes and
+negative integers for southern latitudes.
+
+UPS zones are either ~t~ for northen latitudes or ~nil~ for southern latitudes.
+
+** Ellipsoids
+
+#+BEGIN_SRC lisp
+*ellipsoid*
+#+END_SRC
+
+Special variable containing the name of the ellipsoid that will be used in
+computations ("WGS 84" by default).
+
+
+#+BEGIN_SRC lisp
+(ellipsoids) -> list
+#+END_SRC
+
+Return the list of supported ellipsoids.
+
+** Main functions
+
+#+BEGIN_SRC lisp
+(lat/lon->utm-ups latitude longitude &optional zone) -> list, string
+#+END_SRC
+
+Return the UTM or UPS zone, easting and northing for the given /latitude/ and
+/longitude/. The second returned value is the UTM or UPS band. The /zone/
+parameter can be used to force in which UTM zone the coordinates will be
+computed.
+
+
+#+BEGIN_SRC lisp
+(utm/ups->lat/lon zone easting northing) -> list
+#+END_SRC
+
+Return the latitude and longitude for the given UTM or UPS /zone/, /easting/
+and /northing/.
+
+
+#+BEGIN_SRC lisp
+(band latitude longitude) -> string
+#+END_SRC
+
+Return the UTM or UPS band for the given /latitude/ and /longitude/.
+
+
+#+BEGIN_SRC lisp
+(format-utm/ups zone easting northing &optional band) -> string
+#+END_SRC
+
+Return UTM or UPS coordinates as a string. If /band/ is not specified, it will
+be set to ~+~ for northern zones and to ~-~ for southern zones.
+
+
+#+BEGIN_SRC lisp
+(format-lat/lon latitude longtude &optional decimal) -> string
+#+END_SRC
+
+Return the coordinates as a string. If /decimal/ is not ~nil~, decimal notation
+will be used for angles, otherwise d°m's" notation will be used.
+
+** UTM specific functions
+
+#+BEGIN_SRC lisp
+(lat/lon->utm latitude longitude &optional zone) -> list, string
+#+END_SRC
+
+Return the UTM zone, easting and northing for the given /latitude/ and
+/longitude/. The second returned value is the UTM band. The /zone/ parameter
+can be used to force in which UTM zone the coordinates will be computed.
+
+
+#+BEGIN_SRC lisp
+(utm->lat/lon zone easting northing) -> list
+#+END_SRC
+
+Return the latitude and longitude for the given UTM /zone/, /easting/ and
+/northing/.
+
+
+#+BEGIN_SRC lisp
+(utm-zone latitude longitude) -> integer
+#+END_SRC
+
+Return the UTM zone number for the given /latitude/ and /longitude/.
+
+
+#+BEGIN_SRC lisp
+(utm-band latitude) -> string
+#+END_SRC
+
+Return the UTM band for the given /latitude/.
+
+** UPS specific functions
+
+#+BEGIN_SRC lisp
+(lat/lon->ups latitude longitude) -> list, string
+#+END_SRC
+
+Return the UPS hemisphere, easting and northing for the given /latitude/ and
+/longitude/. The second returned value is the UPS band.
+
+
+#+BEGIN_SRC lisp
+(ups->lat/lon northp easting northing) -> list
+#+END_SRC
+
+Return the latitude and longitude for the given UPS hemisphere (/northp/),
+/easting/ and /northing/.
+
+
+#+BEGIN_SRC lisp
+(ups-band latitude longitude) -> string
+#+END_SRC
+
+Return the UPS band for the given /latitude/ and /longitude/.
+
+* Examples
+
+Load the library:
+
+#+BEGIN_SRC lisp
+> (asdf:load-system "utm-ups")
+...
+#+END_SRC
+
+
+Get the UTM coordinates of Madrid:
+
+#+BEGIN_SRC lisp
+> (utm-ups:lat/lon->utm/ups 40.433333d0 -3.7d0)
+(30 440627.3875554724d0 4476089.9799552625d0)
+"T"
+
+> (utm-ups:format-utm/ups 30 440627.3875554724d0 4476089.9799552625d0 "T")
+"30T 0440627 4476090"
+#+END_SRC
+
+
+Get back the latitude and longitude of Madrid:
+
+#+BEGIN_SRC lisp
+> (utm-ups:utm/ups->lat/lon 30 440627.3875554724d0 4476089.9799552625d0)
+(40.433333001062145d0 -3.700000000011189d0)
+
+> (utm-ups:format-lat/lon 40.433333001062145d0 -3.700000000011189d0)
+"40°25'59.9\"N 3°42'00.0\"W"
+#+END_SRC
+
+
+Get the coordinates of the McMurdo station either in UTM or in UPS:
+
+#+BEGIN_SRC lisp
+> (utm-ups:lat/lon->utm -77.846389d0 166.668333d0)
+(-58 539204.7698733974d0 1358215.357267417d0)
+"C"
+
+> (utm-ups:lat/lon->ups -77.846389d0 166.668333d0)
+(NIL 2312265.8557648384d0 682275.9727717754d0)
+"B"
+#+END_SRC
+
+
+Get back the latitude and longitude of the McMurdo station:
+
+#+BEGIN_SRC lisp
+> (utm-ups:utm/ups->lat/lon -58 539204.7698733974d0 1358215.357267417d0)
+(-77.84638900680321d0 166.66833300105677d0)
+
+> (utm-ups:utm/ups->lat/lon nil 2312265.8557648384d0 682275.9727717754d0)
+(-77.84638899999842d0 166.668333d0)
+#+END_SRC
+
+* Tests
+
+The tests require the /fiveam/ library.
+
+#+BEGIN_SRC lisp
+(asdf:test-system "utm-ups")
+#+END_SRC
