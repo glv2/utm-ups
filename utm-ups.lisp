@@ -371,7 +371,8 @@ NORTHING."
       (ups->lat/lon zone easting northing)))
 
 (defun format-utm/ups (zone easting northing &optional band)
-  "Return UTM or UPS coordinates as a string."
+  "Return UTM or UPS coordinates as a string. If BAND is not specified, it will
+be set to \"+\" for northern zones and to \"-\" for southern zones."
   (check-type zone (or boolean (integer -60 -1) (integer 1 60)))
   (check-type easting (real 0 4000000))
   (check-type northing (real 0 10000000))
@@ -388,7 +389,8 @@ NORTHING."
                 band (round easting) (round northing)))))
 
 (defun format-lat/lon (latitude longitude &optional decimal)
-  "Return the coordinates as a string."
+  "Return the coordinates as a string. If DECIMAL is not NIL, decimal notation
+will be used for angles, otherwise d°m's\" notation will be used."
   (check-type latitude (real -90 90))
   (check-type longitude (real -180 (180)))
   (check-type decimal boolean)
