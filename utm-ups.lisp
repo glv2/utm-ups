@@ -39,12 +39,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 (defun deg->rad (angle)
-  "Convert ANGLE from radians to degres."
+  "Convert ANGLE from radians to degrees."
   (check-type angle real)
   (* angle (/ pi 180.0d0)))
 
 (defun rad->deg (angle)
-  "Convert ANGLE from degres to radians."
+  "Convert ANGLE from degrees to radians."
   (check-type angle real)
   (* angle (/ 180.0d0 pi)))
 
