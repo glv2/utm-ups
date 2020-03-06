@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (in-suite utm-ups-tests)
 
-(defconstant +max-error-rate+ 0.00001)
+(defconstant +max-error-rate+ 0.0001)
 
 (defparameter *utm-data*
   '(((43.642567 -79.38714) (17 630084 4833438) "T")
@@ -38,10 +38,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     ((-34.583338 -58.36667) (-21 374656 6172313) "H")))
 
 (defparameter *ups-data*
-  '(((-88 -1) (nil 1996124.36d0 2222035.45d0) "A")
-    ((-87 3) (nil 2017435.44d0 2332687.92d0) "B")
-    ((85 10) (t 2096454.16d0 1452981.25d0) "Z")
-    ((88 -12) (t 1953829.20d0 1782783.48d0) "Y")))
+  '(((-88 -1) (nil 1996124 2222035) "A")
+    ((-87 3) (nil 2017435 2332688) "B")
+    ((85 10) (t 2096454 1452981) "Z")
+    ((88 -12) (t 1953829 1782783) "Y")))
 
 (defun close-enough (x y)
   (<= (- 1 +max-error-rate+) (abs (/ x y)) (+ 1 +max-error-rate+)))
