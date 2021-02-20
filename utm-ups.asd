@@ -2,7 +2,7 @@
 Convert geographic coordinates between Latitude/Longitude and UTM (Universal
 Transverse Mercator) or UPS (Universal Polar Stereographic).
 
-Copyright 2013-2020 Guillaume Le Vaillant
+Copyright 2013-2021 Guillaume Le Vaillant
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 (asdf:defsystem "utm-ups"
   :name "utm-ups"
   :description "Convert coordinates between Latitude/Longitude and UTM or UPS."
-  :version "1.0"
+  :version "1.1"
   :author "Guillaume Le Vaillant"
   :license "GPL-3"
   :in-order-to ((test-op (test-op "utm-ups/tests")))
@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 (asdf:defsystem "utm-ups/tests"
   :name "utm-ups/tests"
   :description "Unit tests for utm-ups"
-  :version "1.0"
+  :version "1.1"
   :author "Guillaume Le Vaillant"
   :license "GPL-3"
   :depends-on ("fiveam" "utm-ups")
