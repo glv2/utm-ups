@@ -2,7 +2,7 @@
 Convert geographic coordinates between Latitude/Longitude and UTM (Universal
 Transverse Mercator) or UPS (Universal Polar Stereographic).
 
-Copyright 2013-2020 Guillaume Le Vaillant
+Copyright 2013-2021 Guillaume Le Vaillant
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
            #:lat/lon->ups
            #:lat/lon->utm
            #:lat/lon->utm/ups
+           #:parse-utm/ups
            #:ups-band
            #:ups->lat/lon
            #:utm-band
@@ -387,6 +388,19 @@ be set to \"+\" for northern zones and to \"-\" for southern zones."
                           (if (< easting 2000000) "A" "B")))))
         (format nil "00~a ~7,'0d ~7,'0d"
                 band (round easting) (round northing)))))
+
+(defun parse-utm/ups (string)
+  "Return the UTM or UPS coordinates represented as a STRING."
+  (check-type string string)
+  (multiple-value-bind (zone index) (parse-integer string :junk-allowed t)
+    (let* ((band (char string index))
+           (zone (if (or (char-equal band #\-) (char-lessp band #\N))
+                     (- zone)
+                     zone)))
+      (multiple-value-bind (easting index)
+          (parse-integer string :start (1+ index) :junk-allowed t)
+        (let ((northing (parse-integer string :start index)))
+          (list zone easting northing))))))
 
 (defun format-lat/lon (latitude longitude &optional decimal)
   "Return the coordinates as a string. If DECIMAL is not NIL, decimal notation
