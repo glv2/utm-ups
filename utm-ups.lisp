@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
            #:lat/lon->ups
            #:lat/lon->utm
            #:lat/lon->utm/ups
+           #:parse-lat/lon
            #:parse-utm/ups
            #:ups-band
            #:ups->lat/lon
@@ -418,3 +419,46 @@ will be used for angles, otherwise d°m's\" notation will be used."
         (format nil "~a~a ~a~a"
                 (dms latitude) (if (minusp latitude) "S" "N")
                 (dms longitude) (if (minusp longitude) "W" "E")))))
+
+(defun parse-lat/lon (string)
+  "Return the latitude and longitude represented as a STRING."
+  (check-type string string)
+  (flet ((parse-dms (string &optional (start 0))
+           (declare (optimize debug))
+           (let* ((max-index (or (position #\space string :start start)
+                                 (length string)))
+                  (index-1 (position #\° string :start start :end max-index))
+                  (index-2 (position #\' string :start start :end max-index))
+                  (index-3 (position #\" string :start start :end max-index))
+                  (d (parse-integer string
+                                    :start start :end index-1
+                                    :junk-allowed t))
+                  (m (when index-2
+                       (parse-integer string
+                                      :start (1+ index-1) :end index-2
+                                      :junk-allowed t)))
+                  (m (or m 0))
+                  (s (when (and index-2 index-3)
+                       (read-from-string string t nil
+                                         :start (1+ index-2) :end index-3)))
+                  (s (or s 0))
+                  (index (1+ (or index-3 index-2 index-1)))
+                  (letter (char string index))
+                  (angle (* (+ d (/ m 60.0d0) (/ s 3600.0d0))
+                            (if (or (char-equal letter #\S)
+                                    (char-equal letter #\W))
+                                -1
+                                1))))
+             (values angle (1+ index)))))
+    (if (find #\° string)
+        (multiple-value-bind (latitude index) (parse-dms string)
+          (let ((longitude (parse-dms string (1+ index))))
+            (check-type latitude (real -90 90))
+            (check-type longitude (real -180 (180)))
+            (list latitude longitude)))
+        (let ((*read-default-float-format* 'double-float))
+          (multiple-value-bind (latitude index) (read-from-string string)
+            (let ((longitude (read-from-string string t nil :start index)))
+              (check-type latitude (real -90 90))
+              (check-type longitude (real -180 (180)))
+              (list latitude longitude)))))))
