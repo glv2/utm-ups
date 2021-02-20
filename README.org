@@ -66,11 +66,25 @@ be set to ~+~ for northern zones and to ~-~ for southern zones.
 
 
 #+BEGIN_SRC lisp
+(parse-utm/ups string) -> list
+#+END_SRC
+
+Return the UTM or UPS coordinates represented as a /string/.
+
+
+#+BEGIN_SRC lisp
 (format-lat/lon latitude longtude &optional decimal) -> string
 #+END_SRC
 
 Return the coordinates as a string. If /decimal/ is not ~nil~, decimal notation
 will be used for angles, otherwise d°m's" notation will be used.
+
+
+#+BEGIN_SRC lisp
+(parse-lat/lon string) -> list
+#+END_SRC
+
+Return the latitude and longitude represented as a /string/.
 
 ** UTM specific functions
 
