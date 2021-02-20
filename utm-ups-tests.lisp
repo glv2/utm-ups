@@ -2,7 +2,7 @@
 Convert geographic coordinates between Latitude/Longitude and UTM (Universal
 Transverse Mercator) or UPS (Universal Polar Stereographic).
 
-Copyright 2013-2020 Guillaume LE VAILLANT
+Copyright 2013-2021 Guillaume LE VAILLANT
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -184,4 +184,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               (destructuring-bind (lat lon) (ups->lat/lon zone easting northing)
                 (is (close-enough latitude lat))
                 (is (close-enough longitude lon))))))
+        *ups-data*))
+
+(test format/parse-utm/ups
+  (mapc (lambda (data)
+          (destructuring-bind (zone easting northing) (second data)
+            (destructuring-bind (z e n)
+                (parse-utm/ups (format-utm/ups zone easting northing))
+              (unless (eql zone z)
+                (format t "~a ~a ~a~%" zone easting northing))
+              (is (eql zone z))
+              (is (close-enough easting e))
+              (is (close-enough northing n)))))
+        *utm-data*)
+  (mapc (lambda (data)
+          (destructuring-bind (zone easting northing) (second data)
+            (destructuring-bind (z e n)
+                (parse-utm/ups (format-utm/ups zone easting northing))
+              (is (eql zone z))
+              (is (close-enough easting e))
+              (is (close-enough northing n)))))
+        *ups-data*))
+
+(test format-parse-lat/lon
+  (mapc (lambda (data)
+          (destructuring-bind (latitude longitude) (first data)
+            (destructuring-bind (lat lon)
+                (parse-lat/lon (format-lat/lon latitude longitude t))
+              (is (close-enough latitude lat))
+              (is (close-enough longitude lon)))))
+        *utm-data*)
+  (mapc (lambda (data)
+          (destructuring-bind (latitude longitude) (first data)
+            (destructuring-bind (lat lon)
+                (parse-lat/lon (format-lat/lon latitude longitude t))
+              (is (close-enough latitude lat))
+              (is (close-enough longitude lon)))))
         *ups-data*))
