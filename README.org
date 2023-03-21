@@ -1,5 +1,7 @@
 #+TITLE: utm-ups
 
+The active repository is at https://codeberg.org/glv/utm-ups
+
 This is a Common Lisp library to convert coordinates between Latitude/Longitude
 and UTM (Universal Transverse Mercator) or UPS (Universal Polar Stereographic).
 
